@@ -64,3 +64,9 @@ TBD
 ## Running the code
 
 TBD
+
+## Notes
+
+We were told that using only the methods used from an earlier section
+(describing the human-level control paper) we should be able to solve
+the project in fewer than 1800 episodes.
