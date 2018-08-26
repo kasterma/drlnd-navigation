@@ -2,6 +2,7 @@ Banana.app.zip
 Banana.app/
 Navigation.ipynb
 venv/
+__pycache__/
 
 # Note: the next files are not deleted by make clean since they are not easy to download
 .ipynb_checkpoints/

@@ -36,8 +36,13 @@ freeze:
 run-interact:
 	(source ${VIRTUAL_ENV}/bin/activate; python interact.py; )
 
+.PHONY: train
+train:
+	(source ${VIRTUAL_ENV}/bin/activate; python train.py; )
+
 .PHONY: clean
 clean:
 	rm -f ${ENVIRON_FILE} ${EXAMPLE_FILE}
 	rm -rf ${ENVIRON_DIR}
 	rm -rf ${VIRTUAL_ENV}
+	rm -rf __pycache__/
