@@ -1,7 +1,9 @@
 Banana.app.zip
 Banana.app/
 Navigation.ipynb
+venv/
 
 # Note: the next files are not deleted by make clean since they are not easy to download
 .ipynb_checkpoints/
 unity-environment.log
+.idea/
