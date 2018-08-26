@@ -1,2 +1,7 @@
 environment:
   "Banana.app"
+network_spec:
+  input_dim: 37
+  hidden_1_size: 64
+  hidden_2_size: 64
+  output_dim: 4

@@ -40,9 +40,14 @@ run-interact:
 train:
 	(source ${VIRTUAL_ENV}/bin/activate; python train.py; )
 
+.PHONY: test-model
+test-model:
+	(source ${VIRTUAL_ENV}/bin/activate; python model.py; )
+
 .PHONY: clean
 clean:
 	rm -f ${ENVIRON_FILE} ${EXAMPLE_FILE}
 	rm -rf ${ENVIRON_DIR}
 	rm -rf ${VIRTUAL_ENV}
 	rm -rf __pycache__/
+	rm -rf .pytest_cache/
