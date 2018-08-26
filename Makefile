@@ -44,6 +44,10 @@ train:
 test-model:
 	(source ${VIRTUAL_ENV}/bin/activate; python model.py; )
 
+.PHONY: test-agent
+test-agent:
+	(source ${VIRTUAL_ENV}/bin/activate; python agent.py; )
+
 .PHONY: clean
 clean:
 	rm -f ${ENVIRON_FILE} ${EXAMPLE_FILE}

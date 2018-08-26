@@ -56,14 +56,18 @@ score = 0  # initialize the score
 steps = 0
 while True:
     steps += 1
-    action = np.random.randint(action_size)  # select an action
+    action = np.random.randint(action_size)  # select an action; this returns a plain int
+    assert type(action) == type(int())
     log.info("action %d", action)
     env_info = env.step(action)[brain_name]  # send the action to the environment
     next_state = env_info.vector_observations[0]  # get the next state
     log.info("state %s", next_state)
+    log.info("state class %s", type(next_state))
     reward = env_info.rewards[0]  # get the reward
+    assert type(reward) == type(float())
     log.info("reward %d", reward)
     done = env_info.local_done[0]  # see if episode has finished
+    assert type(done) == type(bool())
     score += reward  # update the score
     state = next_state  # roll over the state to next time step
     if done:  # exit loop if episode finished

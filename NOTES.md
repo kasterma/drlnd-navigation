@@ -24,6 +24,15 @@ Make variable:
 
 Note: unclear how to make nn.Module extension dynamic in the number of layers.  Do that later.
 
+In the end the model is essentially that from the lunar lander exercise
+
+## Agent
+
+Since one of the future things to try is to try prioritized experience replay we'll wrap the memory for replays in
+a class.  Note that in the lunar lander the ReplayBuffer seems to store the experiences as numpy data and then
+convert it to torch when remembering.  We have verified witn interact.py that indeed the environment returns its
+state as a numpy array.
+
 ## Training
 
 The paper we are basing this on used experience replay, and a distinct less frequently updated target network.  Try
@@ -33,6 +42,7 @@ In lunar lander used Adam, try the same here.
 
 - also try basic SGD optim.SGD(net.parameters(), lr=0.001)
 - also try SGD with momentum optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+- also try with RMSProp
 - try different learning rates
 - try different sizes of the replay buffer; we expect the initial experience not to be very useful b/c it is too random.
   When does it start becoming useful?
