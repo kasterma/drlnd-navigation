@@ -65,7 +65,7 @@ shown in the makefile.
 
 First run
 
-   make get-environment
+    make get-environment
 
 to get the correct environment downloaded.
 
@@ -76,9 +76,11 @@ environment, this step downloads this example code, and instructs how
 to run it.
 
 Run
+
     make get-example
 
 then
+
     jupyter notebook
 
 In the notebook update the second cell to contain the right filename
