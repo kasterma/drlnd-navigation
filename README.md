@@ -91,6 +91,14 @@ Then run the notebook to see the environment works.  When prompted
 connections?") click accept or deny in the network dialog (in my
 environment it doesn't make a differenc for if the environment runs.
 
+Alternately you can run
+
+    make run-interactive
+    
+or run the script interactive.py in your preferred python environment,
+to see the interaction work.  This script is also very suited to
+get some feel for the interaction in the environment.
+
 ## Running the code
 
 We first set up a virtual environment with all needed packages

@@ -28,6 +28,14 @@ ${VIRTUAL_ENV}:
 .PHONY: virtualenv
 virtualenv: ${VIRTUAL_ENV}
 
+.PHONY: freeze
+freeze:
+	(source ${VIRTUAL_ENV}/bin/activate; pip freeze > requirements.txt; )
+
+.PHONY: run-interact
+run-interact:
+	(source ${VIRTUAL_ENV}/bin/activate; python interact.py; )
+
 .PHONY: clean
 clean:
 	rm -f ${ENVIRON_FILE} ${EXAMPLE_FILE}
