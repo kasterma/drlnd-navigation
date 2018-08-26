@@ -59,7 +59,35 @@ Mean score +13 over 100 consequtive episodes.
 
 ## Getting started
 
-TBD
+Note: in the below steps if you are not on Mac OS X you will likely
+have to adjust the makefile.  For running in Linux the options are
+shown in the makefile.
+
+First run
+
+   make get-environment
+
+to get the correct environment downloaded.
+
+### Testing the environment is correctly set up
+
+Udacity has provided example code for interacting with the
+environment, this step downloads this example code, and instructs how
+to run it.
+
+Run
+    make get-example
+
+then
+    jupyter notebook
+
+In the notebook update the second cell to contain the right filename
+(on Mac OSX this is Banana.app in place of ...).
+
+Then run the notebook to see the environment works.  When prompted
+("Do you want the application “Python.app” to accept incoming network
+connections?") click accept or deny in the network dialog (in my
+environment it doesn't make a differenc for if the environment runs.
 
 ## Running the code
 
