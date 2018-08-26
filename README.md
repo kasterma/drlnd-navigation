@@ -93,7 +93,16 @@ environment it doesn't make a differenc for if the environment runs.
 
 ## Running the code
 
-TBD
+We first set up a virtual environment with all needed packages
+installed
+
+    make venv
+
+Note: the pytorch install there mirrors what is instructed on
+pytorch.org for Mac OSX, in other environments this may need to be
+changed (first thing to try: run the above, then go to pytorch.org for
+the system specific instructions and run these in the activated
+virtual env).
 
 ## Notes
 
