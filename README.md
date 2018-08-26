@@ -31,6 +31,9 @@ think of sensing up to a limited distance, and then the distance and
 color and type (yellow banana, blue banana, zzz wall) of the object
 that the ray intersects.
 
+From playing with the environment (interact.py) an episode in the
+environment is 300 steps of the environent.
+
 ## Environment summary
 
 ### Reward
@@ -55,7 +58,8 @@ that the ray intersects.
 
 ### Solved
 
-Mean score +13 over 100 consequtive episodes.
+Mean score +13 over 100 consequtive episodes, where an episode consists
+of 300 steps in the environment.
 
 ## Getting started
 
