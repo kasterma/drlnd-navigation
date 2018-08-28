@@ -18,7 +18,11 @@ log = logging.getLogger("model")
 
 class Model(nn.Module):
     """
-    Model with two hidden layers with relu activation, exact sizes of layers specified in the spec that is passed in.
+    Model with two hidden layers and relu or tanh activation, exact sizes of layers and activation function are
+    specified in the spec that is passed in.
+
+    Note: since the initialization of the Linear layers is random, if you want to generate the same model twice you
+    need to set the random seed just before creating the model.
     """
     activation = {"relu": F.relu, "tanh": F.tanh}
 

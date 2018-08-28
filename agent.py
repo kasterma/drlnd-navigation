@@ -24,12 +24,18 @@ log = logging.getLogger("agent")
 from model import Model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-torch.manual_seed(42)     # for now set the random seed here
 
+# Note the way we use random seeds to get two copies of the same model is hardly ideal.  Setting a random seed
+# in this way seems a big hack.
 
 class Agent:
+    seed = 42
+
     def __init__(self, config):
-        self.model = Model(config['network_spec'])
+        torch.manual_seed(Agent.seed)
+        self.local_model = Model(config['network_spec'])
+        torch.manual_seed(Agent.seed)
+        self.target_model = Model(config['network_spec'])
         self.memory = Experiences(config=config)
 
 
