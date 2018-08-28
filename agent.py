@@ -25,17 +25,15 @@ from model import Model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# Note the way we use random seeds to get two copies of the same model is hardly ideal.  Setting a random seed
-# in this way seems a big hack.
+random_seed = 42
+torch.manual_seed(random_seed)
+
 
 class Agent:
-    seed = 42
 
     def __init__(self, config):
-        torch.manual_seed(Agent.seed)
         self.local_model = Model(config['network_spec'])
-        torch.manual_seed(Agent.seed)
-        self.target_model = Model(config['network_spec'])
+        self.target_model = self.local_model.get_copy()
         self.memory = Experiences(config=config)
 
 

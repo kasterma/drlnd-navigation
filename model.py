@@ -20,9 +20,6 @@ class Model(nn.Module):
     """
     Model with two hidden layers and relu or tanh activation, exact sizes of layers and activation function are
     specified in the spec that is passed in.
-
-    Note: since the initialization of the Linear layers is random, if you want to generate the same model twice you
-    need to set the random seed just before creating the model.
     """
     activation = {"relu": F.relu, "tanh": F.tanh}
 
@@ -33,11 +30,12 @@ class Model(nn.Module):
     def __init__(self, spec):
         super().__init__()
         self.spec = spec
-        hidden1 = spec['hidden_1_size']
-        self.activation1 = Model.activation_fn(spec['activation_1'])
-        hidden2 = spec['hidden_2_size']
-        self.activation2 = Model.activation_fn(spec['activation_2'])
-        self.wts1 = nn.Linear(spec['input_dim'], hidden1)
+
+        hidden1 = self.spec['hidden_1_size']
+        self.activation1 = Model.activation_fn(self.spec['activation_1'])
+        hidden2 = self.spec['hidden_2_size']
+        self.activation2 = Model.activation_fn(self.spec['activation_2'])
+        self.wts1 = nn.Linear(self.spec['input_dim'], hidden1)
         self.wts2 = nn.Linear(hidden1, hidden2)
         self.wts3 = nn.Linear(hidden2, spec['output_dim'])
 
@@ -48,6 +46,11 @@ class Model(nn.Module):
         h2 = self.activation2(z2)
         z2 = self.wts3(h2)
         return z2
+
+    def get_copy(self):
+        copy = Model(self.spec)
+        for copy_param, self_param in zip(copy.parameters(), self.parameters()):
+            copy_param.data.copy_(self_param.data)
 
 
 class ModelTests(unittest.TestCase):
