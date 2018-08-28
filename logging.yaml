@@ -11,8 +11,10 @@ handlers:
 loggers:
   interact:
     level: DEBUG
-    handlers: [console]
-    propagate: no
+  agent:
+    level: DEBUG
+  model:
+    level: DEBUG
 root:
   level: DEBUG
   handlers: [console]

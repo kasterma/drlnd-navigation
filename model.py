@@ -13,27 +13,35 @@ import numpy as np
 with open("logging.yaml") as log_conf_file:
     log_conf = yaml.load(log_conf_file)
 logging.config.dictConfig(log_conf)
-log = logging.getLogger("train")
+log = logging.getLogger("model")
 
 
 class Model(nn.Module):
     """
     Model with two hidden layers with relu activation, exact sizes of layers specified in the spec that is passed in.
     """
+    activation = {"relu": F.relu, "tanh": F.tanh}
+
+    @classmethod
+    def activation_fn(cls, activation_spec):
+        return cls.activation[activation_spec]
+
     def __init__(self, spec):
         super().__init__()
         self.spec = spec
         hidden1 = spec['hidden_1_size']
+        self.activation1 = Model.activation_fn(spec['activation_1'])
         hidden2 = spec['hidden_2_size']
+        self.activation2 = Model.activation_fn(spec['activation_2'])
         self.wts1 = nn.Linear(spec['input_dim'], hidden1)
         self.wts2 = nn.Linear(hidden1, hidden2)
         self.wts3 = nn.Linear(hidden2, spec['output_dim'])
 
     def forward(self, x):
         z1 = self.wts1(x)
-        h1 = F.relu(z1)
+        h1 = self.activation1(z1)
         z2 = self.wts2(h1)
-        h2 = F.relu(z2)
+        h2 = self.activation2(z2)
         z2 = self.wts3(h2)
         return z2
 
@@ -45,19 +53,30 @@ class ModelTests(unittest.TestCase):
     """
     config1 = {'input_dim': 4,
                'hidden_1_size': 5,
+               'activation_1': "tanh",
                'hidden_2_size': 5,
+               'activation_2': "tanh",
                'output_dim': 2}
     config2 = {'input_dim': 37,
                'hidden_1_size': 64,
+               'activation_1': "relu",
                'hidden_2_size': 64,
+               'activation_2': "relu",
                'output_dim': 4}
+
+    @staticmethod
+    def random_input_tensor(dim):
+        return torch.as_tensor(np.random.random(dim), dtype=torch.float)
 
     def test_create_model(self):
         """Test that we can create a model from the config.yaml in the project and both config in this test"""
         with open("config.yaml") as conf_file:
             config = yaml.load(conf_file)
 
-        m = Model(config["network_spec"])
+        log.info(config)
+
+        input = ModelTests.random_input_tensor(config['network_spec']['input_dim'])
+        Model(config["network_spec"]).forward(input)
         Model(self.config1)
         Model(self.config2)
 
@@ -76,19 +95,18 @@ class ModelTests(unittest.TestCase):
         self.assertFalse(torch.all(torch.eq(m3.wts1.weight, m.wts1.weight)))
         self.assertFalse(torch.all(torch.eq(m3.wts1.bias, m.wts1.bias)))
 
-    @unittest.skip("Failing some of the time for reasons we don't understand yet")
     def test_model_sanity1(self):
         """Test all parameters affect the output"""
-        for _ in range(2):
+        for _ in range(200):
             m1 = Model(self.config1)
             wts_before = torch.tensor(m1.wts1.weight)
-            input1 = torch.as_tensor(np.random.random(self.config1['input_dim']), dtype=m1.wts1.weight.dtype)
+            input1 = ModelTests.random_input_tensor(self.config1['input_dim'])
             output1 = m1.forward(input1)
             idx1 = np.random.randint(m1.wts1.weight.shape[0])
             idx2 = np.random.randint(m1.wts1.weight.shape[1])
             m1.wts1.weight[idx1, idx2] = m1.wts1.weight[idx1, idx2] + 1.0   # change a wt
             output2 = m1.forward(input1)
-            if torch.all(torch.eq(output1, output2)):
+            if True: # torch.all(torch.eq(output1, output2)):
                 log.info("idx1 %d idx2 %d", idx1, idx2)
                 log.info(wts_before)
                 log.info(m1.wts1.weight)

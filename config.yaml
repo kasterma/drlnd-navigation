@@ -3,5 +3,11 @@ environment:
 network_spec:
   input_dim: 37
   hidden_1_size: 64
+  activation_1: relu
   hidden_2_size: 64
+  activation_2: relu
   output_dim: 4
+experience_memory:
+  size: 10000
+train:
+  batch_size: 64
