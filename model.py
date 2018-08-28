@@ -51,6 +51,7 @@ class Model(nn.Module):
         copy = Model(self.spec)
         for copy_param, self_param in zip(copy.parameters(), self.parameters()):
             copy_param.data.copy_(self_param.data)
+        return copy
 
 
 class ModelTests(unittest.TestCase):
@@ -118,6 +119,14 @@ class ModelTests(unittest.TestCase):
                 log.info(wts_before)
                 log.info(m1.wts1.weight)
             self.assertFalse(torch.all(torch.eq(output1, output2)))
+
+    def test_model_copy(self):
+        m = Model(self.config1)
+        m_copy = m.get_copy()
+        input = ModelTests.random_input_tensor(self.config1['input_dim'])
+        y = m.forward(input)
+        y_copy = m_copy.forward(input)
+        self.assertTrue(torch.all(torch.eq(y, y_copy)))
 
 
 if __name__ == "__main__":
