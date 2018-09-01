@@ -33,6 +33,11 @@ a class.  Note that in the lunar lander the ReplayBuffer seems to store the expe
 convert it to torch when remembering.  We have verified witn interact.py that indeed the environment returns its
 state as a numpy array.
 
+In the example network for the lunar lander there is a silly trick for getting the same network twice; there we create
+a model, set the random seed back to the same value and generate a model again.  This results in twice the same model.
+However it is playing with the random seed that hardly is elegant.  Creating a new model of the same shape, and then
+copying over the data is more elegant.
+
 ## Training
 
 The paper we are basing this on used experience replay, and a distinct less frequently updated target network.  Try
@@ -46,6 +51,9 @@ In lunar lander used Adam, try the same here.
 - try different learning rates
 - try different sizes of the replay buffer; we expect the initial experience not to be very useful b/c it is too random.
   When does it start becoming useful?
+  
+We are also planning to try different decay strategies for epsilon.  The example implements exponential decay, we also
+want to try linear decay up to a constant.
   
 ## Torch
 

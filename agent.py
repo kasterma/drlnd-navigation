@@ -29,12 +29,35 @@ random_seed = 42
 torch.manual_seed(random_seed)
 
 
+class AgentInterface:
+    def record_step(self, state, action, reward, next_state, done):
+        """Record the step and possilby perform a learning step"""
+        raise NotImplementedError()
+
+    def get_action(self, state, eps=0.0):
+        """Use the contained model to get the next action to perform in the environment"""
+        raise NotImplementedError()
+
+
 class Agent:
 
     def __init__(self, config):
-        self.local_model = Model(config['network_spec'])
-        self.target_model = self.local_model.get_copy()
+        self.action_size = config['network_spec']['output_dim']
+        self.local_model = Model(config['network_spec']).to(device)
+        self.target_model = self.local_model.get_copy().to(device)
         self.memory = Experiences(config=config)
+
+    def act(self, state, eps):
+        """Select an action epsilon greedy from the local_model"""
+        if random.random > eps:
+            state_tensor = torch.from_numpy(state).float().to(device)   # TODO: test if we needed unsqueeze after all
+            self.local_model.train(False)
+            with torch.no_grad:
+                action_values = self.local_model.forward(state_tensor)
+            return np.argmax(action_values)
+        else:
+            return random.randint(self.action_size)
+
 
 
 class NotEnoughExperiences(Exception):
@@ -163,6 +186,31 @@ class AgentTest(unittest.TestCase):
 
         random.seed(self.RANDOM_SEED)    # reset the seed so we get the same sample as in the raw_sample call just now
         print(e.torch_sample())
+
+    config1 = {'network_spec':
+                   {'input_dim': 4,
+               'hidden_1_size': 5,
+               'activation_1': "tanh",
+               'hidden_2_size': 5,
+               'activation_2': "tanh",
+               'output_dim': 2}}
+    config2 = {'network_spec':
+                   {'input_dim': 37,
+               'hidden_1_size': 64,
+               'activation_1': "relu",
+               'hidden_2_size': 64,
+               'activation_2': "relu",
+               'output_dim': 4}}
+
+    @staticmethod
+    def random_input_tensor(dim):
+        return torch.as_tensor(np.random.random(dim), dtype=torch.float)
+
+    def test_act(self):
+        """Test if the unsqueeze from the example had any function"""
+        input = AgentTest.random_input_tensor(4)
+        a = Agent(self.config1)
+        log.info(a.act(input))
 
 
 if __name__ == "__main__":
