@@ -38,6 +38,8 @@ a model, set the random seed back to the same value and generate a model again. 
 However it is playing with the random seed that hardly is elegant.  Creating a new model of the same shape, and then
 copying over the data is more elegant.
 
+Bad design in needing to pass the full config to the memory module.
+
 ## Training
 
 The paper we are basing this on used experience replay, and a distinct less frequently updated target network.  Try
@@ -54,7 +56,72 @@ In lunar lander used Adam, try the same here.
   
 We are also planning to try different decay strategies for epsilon.  The example implements exponential decay, we also
 want to try linear decay up to a constant.
-  
+
+The last type error took a long time to find and fix, though in retrospect it is pretty clear.  In agent.get_action
+there are two paths to get an action.  And they returned different types.  The unity environment wasn't able to
+handle that different, adding a conversion to int solved the issue.
+
+First training run without type errors:
+
+    $   make train
+    $ENVIRON_URL is https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip
+    $ENVIRON_FILE is Banana.app.zip
+    $ENRIFON_DIR is Banana.app
+    virtual env is venv
+    (source venv/bin/activate; python train.py; )
+    2018-09-02 13:37:13,620 - train - INFO - Starting to train
+    2018-09-02 13:37:13,623 - train - INFO - Using config: {'environment': 'Banana.app', 'network_spec': {'input_dim': 37, 'hidden_1_size': 64, 'activation_1': 'relu', 'hidden_2_size': 64, 'activation_2': 'relu', 'output_dim': 4}, 'experience_memory': {'size': 100000}, 'train': {'batch_size': 64, 'update_every': 4, 'tau': 0.001, 'gamma': 0.99, 'learning_rate': 0.0005}, 'scores_filename': 'train_scores'}
+    Mono path[0] = '/Users/kasterma/projects/drlnd-navigation/Banana.app/Contents/Resources/Data/Managed'
+    Mono config path = '/Users/kasterma/projects/drlnd-navigation/Banana.app/Contents/MonoBleedingEdge/etc'
+    2018-09-02 13:38:10,994 - train - INFO - After 50 scores have mean in last 100 of 0.32
+    2018-09-02 13:39:09,599 - train - INFO - After 100 scores have mean in last 100 of 0.86
+    2018-09-02 13:40:03,182 - train - INFO - After 150 scores have mean in last 100 of 2.45
+    2018-09-02 13:40:56,936 - train - INFO - After 200 scores have mean in last 100 of 4.4
+    2018-09-02 13:41:52,027 - train - INFO - After 250 scores have mean in last 100 of 6.01
+    2018-09-02 13:42:46,937 - train - INFO - After 300 scores have mean in last 100 of 7.26
+    2018-09-02 13:43:42,171 - train - INFO - After 350 scores have mean in last 100 of 8.87
+    2018-09-02 13:44:37,331 - train - INFO - After 400 scores have mean in last 100 of 10.16
+    2018-09-02 13:45:32,838 - train - INFO - After 450 scores have mean in last 100 of 11.05
+    2018-09-02 13:46:28,101 - train - INFO - After 500 scores have mean in last 100 of 12.15
+    2018-09-02 13:47:23,606 - train - INFO - After 550 scores have mean in last 100 of 12.39
+    2018-09-02 13:48:18,941 - train - INFO - After 600 scores have mean in last 100 of 12.37
+    2018-09-02 13:49:16,037 - train - INFO - After 650 scores have mean in last 100 of 13.24
+    2018-09-02 13:50:12,662 - train - INFO - After 700 scores have mean in last 100 of 14.22
+    2018-09-02 13:51:08,768 - train - INFO - After 750 scores have mean in last 100 of 14.81
+    2018-09-02 13:52:04,973 - train - INFO - After 800 scores have mean in last 100 of 14.85
+    2018-09-02 13:53:01,400 - train - INFO - After 850 scores have mean in last 100 of 15.12
+    2018-09-02 13:53:57,599 - train - INFO - After 900 scores have mean in last 100 of 15.63
+    2018-09-02 13:54:53,709 - train - INFO - After 950 scores have mean in last 100 of 15.9
+    2018-09-02 13:55:50,291 - train - INFO - After 1000 scores have mean in last 100 of 16.14
+    2018-09-02 13:56:46,492 - train - INFO - After 1050 scores have mean in last 100 of 16.28
+    2018-09-02 13:57:42,484 - train - INFO - After 1100 scores have mean in last 100 of 16.01
+    2018-09-02 13:58:38,042 - train - INFO - After 1150 scores have mean in last 100 of 15.2
+    2018-09-02 13:59:34,099 - train - INFO - After 1200 scores have mean in last 100 of 15.32
+    2018-09-02 14:00:30,804 - train - INFO - After 1250 scores have mean in last 100 of 15.96
+    2018-09-02 14:01:27,257 - train - INFO - After 1300 scores have mean in last 100 of 15.99
+    2018-09-02 14:02:24,112 - train - INFO - After 1350 scores have mean in last 100 of 15.72
+    2018-09-02 14:03:20,788 - train - INFO - After 1400 scores have mean in last 100 of 16.06
+    2018-09-02 14:04:19,571 - train - INFO - After 1450 scores have mean in last 100 of 16.05
+    2018-09-02 14:05:21,535 - train - INFO - After 1500 scores have mean in last 100 of 15.47
+    2018-09-02 14:06:24,013 - train - INFO - After 1550 scores have mean in last 100 of 15.84
+    2018-09-02 14:07:27,489 - train - INFO - After 1600 scores have mean in last 100 of 15.76
+    2018-09-02 14:08:30,095 - train - INFO - After 1650 scores have mean in last 100 of 15.35
+    2018-09-02 14:09:35,864 - train - INFO - After 1700 scores have mean in last 100 of 14.85
+    2018-09-02 14:10:37,680 - train - INFO - After 1750 scores have mean in last 100 of 14.29
+    2018-09-02 14:11:39,343 - train - INFO - After 1800 scores have mean in last 100 of 15.1
+    2018-09-02 14:12:40,440 - train - INFO - After 1850 scores have mean in last 100 of 15.93
+    2018-09-02 14:13:43,792 - train - INFO - After 1900 scores have mean in last 100 of 16.06
+    2018-09-02 14:14:44,709 - train - INFO - After 1950 scores have mean in last 100 of 15.7
+    2018-09-02 14:15:47,432 - train - INFO - After 2000 scores have mean in last 100 of 15.26
+    2018-09-02 14:15:47,432 - train - INFO - Done training, saving scores and model
+    Traceback (most recent call last):
+      File "train.py", line 199, in <module>
+        t.train()
+      File "train.py", line 89, in train
+        self.agent.save()
+    AttributeError: 'Agent' object has no attribute 'save'
+    make: *** [train] Error 1
+
 ## Torch
 
 ### Randomness issues

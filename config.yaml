@@ -8,6 +8,11 @@ network_spec:
   activation_2: relu
   output_dim: 4
 experience_memory:
-  size: 10000
+  size: 100000
 train:
   batch_size: 64
+  update_every: 4
+  tau: 0.001
+  gamma: 0.99
+  learning_rate: 0.0005
+scores_filename: "train_scores"
