@@ -27,7 +27,7 @@ class TestMovingAverage(unittest.TestCase):
 moving_average_score = moving_average(scores)
 solved = moving_average_score > 13.0
 
-idx_solved = np.where(moving_average_score > 13.0)[0]
+idx_solved = np.where(moving_average_score > 13.0)[0] + 99
 idx_not_solved = np.setdiff1d(np.arange(len(scores)-(moving_average_length - 1)), idx_solved)
 
 from matplotlib.pyplot import figure
@@ -35,12 +35,12 @@ figure(num=None, figsize=(12, 8), dpi=100, facecolor='w', edgecolor='k')
 
 plt.scatter(idx_not_solved, scores[idx_not_solved], s=6, c = 'red', label="score before solved")
 plt.scatter(idx_solved, scores[idx_solved], s=6, c ='green', label="score after solved")
-plt.plot(np.arange(len(moving_average_score)), moving_average_score, linewidth=3, color='black')
+plt.plot(np.arange(len(moving_average_score))+99, moving_average_score, linewidth=3, color='black')
 plt.axvline(x=max(idx_not_solved)+1, linestyle="--")
 plt.title("Scores during training")
 plt.xlabel("Episode index")
 plt.ylabel("Score")
 plt.legend()
 
-plt.savefig("images/scoreplot.png")
-#plt.show()
+plt.savefig("scoreplot.png")
+plt.show()

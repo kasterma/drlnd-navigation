@@ -42,11 +42,11 @@ train:
 
 .PHONY: test-model
 test-model:
-	(source ${VIRTUAL_ENV}/bin/activate; python model.py; )
+	(source ${VIRTUAL_ENV}/bin/activate; python model_test.py; )
 
 .PHONY: test-agent
 test-agent:
-	(source ${VIRTUAL_ENV}/bin/activate; python agent.py; )
+	(source ${VIRTUAL_ENV}/bin/activate; python agent_test.py; )
 
 .PHONY: clean
 clean:

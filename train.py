@@ -63,16 +63,12 @@ class Train:
 
             for i_step in range(self.max_t):
                 action = self.agent.get_action(state, eps)
-                #log.info("action %s (ct %d %s %f)", action, self.agent.step_count, self.brain_name, eps)
 
-                #log.info("env %s", self.env)
                 result = self.env.step(action)
-                #log.info("result %s", result)
                 env_info = result[self.brain_name]
                 next_state = env_info.vector_observations[0]
                 reward = env_info.rewards[0]
                 done = env_info.local_done[0]
-                #log.info("done %s", done)
 
                 self.agent.record_step(state, action, reward, next_state, done)
 
@@ -200,7 +196,8 @@ if __name__ == "__main__":
 
     log.info("Using config: %s", conf)
     t = Train(conf)
-    #t.run_random()
-    #t.train()
-    t.test("trained_model-fully_trained.pth")
+    # t.run_random()   # interact with the environment choosing random actions
+    t.train()
+    # t.test("trained_model-fully_trained.pth")   # use the model with weights stored in the pth file for
+                                                  # interaction with the environment
     t.close()
