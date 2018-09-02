@@ -79,18 +79,22 @@ class Train:
                 state = next_state
                 score += reward
                 if done:
-                    #log.info("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
                     break
 
             self.scores.add(score)
+            if i_episode % 100 == 0:
+                self.agent.save("after_episode_{i}".format(i=i_episode))
 
         log.info("Done training, saving scores and model")
         self.scores.save()
-        self.agent.save()
+        self.agent.save("fully_trained")
 
-    def test(self):
+    def test(self, filename=None):
         """Run the model for 200 episodes (no learning so really testing the model, not a mixture of the model at
         different stages of learning"""
+
+        if filename:
+            self.agent.load_model(filename)
 
         scores = Scores(print_every=1, filename="testrun")
         for i_episode in range(200):
@@ -100,18 +104,19 @@ class Train:
 
             for i_step in range(self.max_t):
                 action = self.agent.get_action(state, 0.0)
-                log.info(action)
 
-                env_info = self.env.step(action.numpy())[self.brain_name]
+                env_info = self.env.step(action)[self.brain_name]
                 next_state = env_info.vector_observations[0]
                 reward = env_info.rewards[0]
                 done = env_info.local_done[0]
-
+                if reward != 0:
+                    log.info("reward %s", reward)
                 state = next_state
                 score += reward
                 if done:
                     break
 
+            log.info("Episode {i_episode} score {score}".format(i_episode=i_episode, score=score))
             scores.add(score)
 
         log.info("Done training, saving scores and model")
@@ -196,6 +201,6 @@ if __name__ == "__main__":
     log.info("Using config: %s", conf)
     t = Train(conf)
     #t.run_random()
-    t.train()
-    t.test()
+    #t.train()
+    t.test("trained_model-fully_trained.pth")
     t.close()

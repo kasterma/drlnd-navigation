@@ -38,6 +38,10 @@ class AgentInterface:
         """Save the model variables"""
         raise NotImplementedError()
 
+    def load_model(self, filename):
+        """Load model coefficients from the passed file"""
+        raise NotImplementedError()
+
 
 class Agent(AgentInterface):
 
@@ -120,9 +124,10 @@ class Agent(AgentInterface):
             target_param.data.copy_(self.tau * local_param.data + (1.0 - self.tau) * target_param.data)
 
     def save(self, id="missing_model_id"):
-        torch.save(self.local_model.state_dict(), "trained_model-{}.pth".format(id=id))
+        torch.save(self.local_model.state_dict(), "trained_model-{id}.pth".format(id=id))
 
-
+    def load_model(self, filename):
+        self.local_model.load_state_dict(torch.load(filename))
 
 
 class NotEnoughExperiences(Exception):
