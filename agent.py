@@ -2,7 +2,6 @@
 
 import logging.config
 import random
-import unittest
 from collections import deque
 from typing import List
 
@@ -30,7 +29,7 @@ class AgentInterface:
         """Record the step and possilby perform a learning step"""
         raise NotImplementedError()
 
-    def get_action(self, state, eps=0.0):
+    def get_action(self, state, eps):
         """Use the contained model to get the next action to perform in the environment"""
         raise NotImplementedError()
 
@@ -64,7 +63,7 @@ class Agent(AgentInterface):
     def get_action(self, state, eps):
         """Select an action epsilon greedy from the local_model"""
         if random.random() > eps:
-            state_tensor = torch.from_numpy(state).float().unsqueeze(0).to(device)   # TODO: test if we needed unsqueeze after all
+            state_tensor = torch.from_numpy(state).float().unsqueeze(0).to(device)
             self.local_model.train(False)
             with torch.no_grad():
                 action_values = self.local_model.forward(state_tensor)
@@ -76,12 +75,15 @@ class Agent(AgentInterface):
         self.step_count += 1
         self.memory.add(state, action, reward, next_state, done)
 
-        if self.step_count % self.update_every == 0 and self.memory.big_enough():
-            sample = self.memory.torch_sample()
-            self.learn(sample)
+        if self.step_count % self.update_every == 0:
+            try:
+                self.learn()
+            except NotEnoughExperiences:
+                log.debug("not learing b/c have not recorded enough experiences yet")
+                pass  # this exception is expected at the start of learning until enough steps have been recorded
 
-    def learn(self, experiences):
-        states, actions, rewards, next_states, dones = experiences
+    def learn(self):
+        states, actions, rewards, next_states, dones = self.memory.torch_sample()
         log.debug(states.size())
         log.debug(next_states.size())
 
@@ -169,9 +171,6 @@ class Experiences:
 
     def add(self, state, action, reward, next_state, done):
         self.memory.append(Experience(state, action, reward, next_state, done))
-
-    def big_enough(self):
-        return len(self.memory) > self.sample_size
 
     def raw_sample(self):
         if len(self.memory) < self.sample_size:

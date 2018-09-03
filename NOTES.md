@@ -6,13 +6,15 @@ Lab notebook to keep track of what was done; to be used as a basis for the repor
 - DONE: set up interact.py to check the environment, and learn how to interact with it
 - DONE: set up train.py, agent.py, and model.py as a framework for the training
 - DONE: fill in model.py and do some testing with it
-- fill in agent.py and do some testing with it
-- fill in train.py and do some testing with it
+- DONE: fill in agent.py and do some testing with it
+- DONE: fill in train.py and do some testing with it
 - train.py version in a notebook to get graphs while learning
-- how to test easily how much different a GPU can make?
+- how to test easily how much difference a GPU can make?
 - how to test our use of the GPU?
 - in the lunar lander problem the network that worked well was more complicated than expected; same here?
-- understand the failing unittest in model.py, and extend the tests
+- DONE: understand the failing unittest in model.py
+- extend the tests for the neural network (i.e. get a default lists of tests to run against a network to see
+  basic implementation is not faulty)
 
 ## Architecture
 
@@ -180,3 +182,6 @@ Output when failing (though it succeeds often)
             [-0.4679, -0.4220, -0.1014,  0.2742]], grad_fn=<CopySlices>)
             
 Question asked on the slack.
+
+Problem was that we were using ReLU activation, and the the activations landed in the contant zero part.  By using
+tanh activations the problem was resolved.

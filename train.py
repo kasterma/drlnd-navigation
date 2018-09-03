@@ -1,4 +1,7 @@
 # train the agent
+#
+# In the init method of Train the environment, agent, and training are set up.  After that calling train on it runs
+# through the described training, saving the episode scores and (every so many steps) model weights.
 
 import logging.config
 from collections import deque
@@ -16,11 +19,14 @@ log = logging.getLogger("train")
 
 
 class Train:
-    def __init__(self, config, episodes_ct=2000, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
-        self.eps = EpsExponential(eps_start=eps_start, eps_end=eps_end, eps_decay=eps_decay)
+    def __init__(self, config):
+        self.episodes_ct = config['train']['episodes_ct']
+        self.max_t = config['train']['max_t']
+        self.eps_start = config['train']['eps_start']
+        self.eps_end = config['train']['eps_end']
+        self.eps_decay = config['train']['eps_decay']
 
-        self.max_t = max_t
-        self.episodes_ct = episodes_ct
+        self.eps = EpsExponential(eps_start=self.eps_start, eps_end=self.eps_end, eps_decay=self.eps_decay)
 
         self.agent: AgentInterface = Agent(config)
         self.scores = Scores(filename=config['scores_filename'])
@@ -130,7 +136,7 @@ class EpsInterface:
 class EpsExponential(EpsInterface):
     """Exponentially decaying epsilon"""
 
-    def __init__(self, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
+    def __init__(self, eps_start, eps_end, eps_decay):
         self.eps_start = eps_start
         self.eps_end = eps_end
         self.eps_decay = eps_decay

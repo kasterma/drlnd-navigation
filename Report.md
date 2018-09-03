@@ -76,13 +76,31 @@ This configuration is converted to a model in `model.py`.
 
 ## The agent
 
-The agent class in `agent.py` it mediates the interaction between the environment and the model
+The agent class in `agent.py` it mediates the interaction between the environment and the model.  The methods that
+the training code interacts with are in the AgentInterface, but of course the most intersting method is the learn
+method, where the actual learning happes.  There we get a batch from the memory, compute achieved and expected results,
+use the Adam optimizer to update the network, and finally do a soft update on the target network.
 
 ## The training
 
 We were told that using only the methods used from an earlier section, where we solved the lunar lander problem,
-we should be able to solve the project in fewer than 1800 episodes.  We used the Adam optimizer with learning rate
-0.0005.
+we should be able to solve the project in fewer than 1800 episodes.  The learning run here recorded shows that it was
+in fact solved after 505 episodes.
+
+- The discount factor gamma was set to 0.99.
+- We used the Adam optimizer with learning rate 0.0005.
+- The minibatch size was 64 (as determined by the size of the sample returned from the experience memory
+  in agent.py:Experiences).
+- After every 4 steps in the environment we run a learning iteration.
+- The experience memory was chosen to be of size 100.000.  Since the environment restricts the number of steps in an
+  episode to 300 (the max_t parameter is not relevant in this environment as long as chosen
+  above 300) and we run with 2000 episodes, there was a max eperience possible of 300 * 2000, which is 6 times bigger.
+- The epsilon, as used in the epsilon-greedy generation of actions, exponentially decays from 1.0 to 0.01 with a
+  decay factor of 0.995 (train.py:EpsExponential).
+- After every minibatch we update the target network by linearly averaging the target network and local network with
+  a factor tau, chosen to be 0.001.
+  
+Note: all these parameters are controlled from the file config.yaml.
 
 ## Results of training run
 
@@ -97,5 +115,17 @@ The problem was really solved at after episode 505 (this is the point where the 
 above 13 and then never drops below it).  Note that it confidently passes the score of 13, but relatively shortly
 after essentially stops learning.
 
-
 ![scores graph](images/scoreplot.png)
+
+The weights learned during this run are saved in the file trained_model-fully_trained.pth.
+
+## Future directions
+
+First we intend to run a set of variations:  Try the effect of train.py:EpsLinear (no effect expected), try to see how
+small the network can get to still solve the problem in a reasonable numer of episodes, try RMSProp in place of Adam and
+see the effect of the learning rate.  Try the effects of changing parameters like tau. See if we get any acceleration
+through using a GPU (all learning so far was on the CPU), here we expect little speedup b/c the network is so small.  We
+also want to still experiment with different sizes of the reply buffer.
+
+Finally implement the remaining methods to get [rainbow](https://arxiv.org/abs/1710.02298) running and see the speedup
+this delivers.
