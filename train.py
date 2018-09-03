@@ -26,11 +26,9 @@ class Train:
         self.eps_end = config['train']['eps_end']
         self.eps_decay = config['train']['eps_decay']
 
-        self.eps = EpsExponential(eps_start=self.eps_start, eps_end=self.eps_end, eps_decay=self.eps_decay)
-
         self.agent: AgentInterface = Agent(config)
         self.scores = Scores(filename=config['scores_filename'])
-        self.eps = EpsExponential()
+        self.eps = EpsExponential(eps_start=self.eps_start, eps_end=self.eps_end, eps_decay=self.eps_decay)
 
         self.env = UnityEnvironment(file_name="Banana.app")
         self.brain_name = self.env.brain_names[0]
