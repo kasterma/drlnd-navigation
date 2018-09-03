@@ -25,6 +25,17 @@ First run
 to get the correct environment downloaded (this is an adjusted version
 of the banana collector environment of the Unity ml-agents package).
 
+Then we set up a virtual environment with all needed packages
+installed
+
+    make venv
+
+Note: the pytorch install there mirrors what is instructed on
+pytorch.org for Mac OSX, in other environments this may need to be
+changed (first thing to try: run the above, then go to pytorch.org for
+the system specific instructions and run these in the activated
+virtual env).
+
 ### Testing the environment is correctly set up
 
 Udacity has provided example code for interacting with the
@@ -50,20 +61,10 @@ Alternately you can run
     
 or run the script interactive.py in your preferred python environment,
 to see the interaction work.  This script is also very suited to
-get some feel for the interaction in the environment.
+get some feel for the interaction in the environment.  There is a lot
+of logging, which you can see what it means in the code of interact.py
 
 ## Running the code
-
-We first set up a virtual environment with all needed packages
-installed
-
-    make venv
-
-Note: the pytorch install there mirrors what is instructed on
-pytorch.org for Mac OSX, in other environments this may need to be
-changed (first thing to try: run the above, then go to pytorch.org for
-the system specific instructions and run these in the activated
-virtual env).
 
 Finally you can train the model (storing the episode scores in train_scores.npy
 and the model weights in trained_model-fully_trained.pth) using
