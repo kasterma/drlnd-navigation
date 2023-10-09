@@ -63,7 +63,7 @@ testpath==0.6.0
 torch==1.13.1
 torchvision==0.2.1
 tornado==6.3.3
-traitlets==4.3.2
+traitlets==5.11.2
 unityagents==0.4.0
 wcwidth==0.2.8
 Werkzeug==2.2.3
