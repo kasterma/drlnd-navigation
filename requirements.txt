@@ -66,5 +66,5 @@ tornado==6.3.3
 traitlets==5.13.0
 unityagents==0.4.0
 wcwidth==0.2.8
-Werkzeug==2.2.3
+Werkzeug==3.0.1
 widgetsnbextension==3.4.0
